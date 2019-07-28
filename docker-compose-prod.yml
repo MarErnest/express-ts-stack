@@ -1,0 +1,44 @@
+version: '3'
+services:
+
+  # Redis
+  redis-server:
+    image: redis:4.0
+    container_name: redis-server
+    ports:
+      - 6379:6379
+
+  # Database
+  mysql-server:
+    image: mysql:5.7.21
+    container_name: mysql-server
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: docker_mysql_Server
+      MYSQL_DATABASE: docker_mysql_Server
+    ports:
+      - 3306:3306
+    volumes:
+      - './.data/mysql:/var/lib/mysql'
+      - './devops/server-configs/mysqld_charset.cnf:/etc/mysql/conf.d/mysqld_charset.cnf'
+    depends_on:
+      - redis-server
+
+  # Server
+  express-server:
+    container_name: express-server
+    restart: always
+    command: 'npm run serve'
+    image: express-server:latest
+    volumes:
+      - ./logs:/logs
+    env_file:
+      - .env
+    ports: 
+      - "3001:3001"
+    links:
+      - mysql-server
+    depends_on:
+      - mysql-server
+      - redis-server

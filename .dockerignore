@@ -1,0 +1,16 @@
+# Configs
+.env
+
+# Docker build
+*Dockerfile*
+*docker-compose*
+Dockerfile
+prod.Dockerfile
+
+# Folders
+.idea
+.data/
+.git/
+.vscode/
+npm-version/
+node_modules/
